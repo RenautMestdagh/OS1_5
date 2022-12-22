@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <time.h>
+#include <pthread.h>
 
 typedef uint16_t sensor_id_t;
 typedef double sensor_value_t;
@@ -21,6 +22,9 @@ typedef time_t sensor_ts_t; // UTC timestamp as returned by time() - notice that
 typedef struct {
     sensor_id_t id;
     sensor_value_t value;
+    bool strgmngrRead;
+    bool datamngrRead;
+    pthread_mutex_t mutex;
     sensor_ts_t ts;
 } sensor_data_t;
 

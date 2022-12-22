@@ -52,6 +52,9 @@ void connmgr_listen(int port_number, sbuffer_t* buffer) {
 
         if (n == 0) {
             // quit the connmgr (TIMEOUT was reached)
+            printf("%d tupples added\n",getAdded(buffer));
+            printf("%d tupples calculated\n",getData(buffer));
+            printf("%d tupples stored\n",getStored(buffer));
             printf("No sensor data received after " TO_STRING(TIMEOUT) " seconds. Quitting server.\n");
             active = false;
         } else {
@@ -95,10 +98,8 @@ void connmgr_listen(int port_number, sbuffer_t* buffer) {
                             ASSERT_ELSE_PERROR(write(fd, &data.ts, sizeof(data.ts)) == sizeof(data.ts));
 #endif
                             printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value, data.ts);
-                            sbuffer_lock(buffer);
                             int ret = sbuffer_insert_first(buffer, &data);
                             assert(ret == SBUFFER_SUCCESS);
-                            sbuffer_unlock(buffer);
                         } else if (result == TCP_CONNECTION_CLOSED) {
                             printf("Sensor with id %" PRIu16 " disconnected\n", *tcp_last_seen_sensor_id(socket));
                             tcp_close(&socket);

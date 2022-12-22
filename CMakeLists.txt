@@ -7,6 +7,9 @@ set(COMMON_FLAGS -O2 -Wall -Wextra -ggdb)
 # add_compile_options(-fsanitize=address)
 # add_link_options(-fsanitize=address)
 
+add_compile_options(-fsanitize=thread)  #datarace
+add_link_options(-fsanitize=thread)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(lib)

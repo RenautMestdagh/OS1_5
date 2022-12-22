@@ -63,6 +63,34 @@ double normalized_rand() {
     return min + (rand() / div);
 }
 
+void sensor_node_lock(sensor_data_t* node) {
+    assert(node);
+    ASSERT_ELSE_PERROR(pthread_mutex_lock(&node->mutex) == 0);
+}
+void sensor_node_unlock(sensor_data_t* node) {
+    assert(node);
+    ASSERT_ELSE_PERROR(pthread_mutex_unlock(&node->mutex) == 0);
+}
+void sensor_node_set_strgmngrRead(sensor_data_t* node){
+    sensor_node_lock(node);
+    node->strgmngrRead = true;
+    sensor_node_unlock(node);
+}
+bool sensor_node_get_strgmngrRead(sensor_data_t* node){
+    sensor_node_lock(node);
+    bool read = node->strgmngrRead;
+    sensor_node_unlock(node);
+    return read;
+}
+void sensor_node_set_datamngrRead(sensor_data_t* node){
+    sensor_node_lock(node);
+    node->datamngrRead = true;
+    sensor_node_unlock(node);
+}
+bool sensor_node_get_datamngrRead(sensor_data_t* node){
+    return node->datamngrRead;
+}
+
 /**
  * For starting the sensor node 4 command line arguments are needed. These
  * should be given in the order below and can then be used through the argv[]
@@ -104,6 +132,8 @@ int main(int argc, char* argv[]) {
     data.value = INITIAL_TEMPERATURE;
     i = LOOPS;
     while (i) {
+        data.datamngrRead=false;
+        data.strgmngrRead=false;
         data.value = data.value + TEMP_DEV * (normalized_rand() - (data.value - INITIAL_TEMPERATURE) / 100.0);
         time(&data.ts);
         // send data to server in this order (!!):
