@@ -35,8 +35,6 @@ void sbuffer_lock(sbuffer_t* buffer);
 
 void sbuffer_unlock(sbuffer_t* buffer);
 
-//bool sbuffer_is_empty(sbuffer_t* buffer);
-
 /**
  * Inserts the sensor data in 'data' at the start of 'buffer' (at the 'head')
  * \param buffer a pointer to the buffer that is used
@@ -58,6 +56,4 @@ void sbuffer_close(sbuffer_t* buffer);
 
 sensor_data_t *sbuffer_dataProcessmngr(sbuffer_t* buffer, int reader);
 
-void sbuffer_mark_read(sbuffer_t* buffer, int reader, sensor_data_t *data);
-
-//sensor_data_t *sbuffer_datamngrR(sbuffer_t* buffer);
+void sbuffer_mark_read(sbuffer_t* buffer, int reader);

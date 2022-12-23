@@ -37,25 +37,11 @@ static void* datamgr_run(void* buffer) {
         sensor_data_t *data = sbuffer_dataProcessmngr(buffer, 0);
         if(data){
             datamgr_process_reading(data);
-            bufferAddData(buffer);
-            sbuffer_mark_read(buffer, 0, data);
+            bufferAddData(buffer);  // counter
+            sbuffer_mark_read(buffer, 0);
         } else
             break;
     }
-        
-        
-        // sbuffer_lock(buffer);
-        // if (!sbuffer_is_empty(buffer)) {
-        //     sensor_data_t data = sbuffer_remove_last(buffer);
-        //     datamgr_process_reading(&data);
-        //     // everything nice & processed
-        // } else if (sbuffer_is_closed(buffer)) {
-        //     // buffer is both empty & closed: there will never be data again
-        //     sbuffer_unlock(buffer);
-        //     break;
-        // }
-        // // give the others a chance to lock the mutex
-        // sbuffer_unlock(buffer);
 
     datamgr_free();
 
@@ -71,37 +57,14 @@ static void* storagemgr_run(void* buffer) {
         sensor_data_t *data = sbuffer_dataProcessmngr(buffer, 1);
         if(data){
             storagemgr_insert_sensor(db, data->id, data->value, data->ts);
-            bufferAddStored(buffer);
-            sbuffer_mark_read(buffer, 1, data);
+            bufferAddStored(buffer);    // counter
+            sbuffer_mark_read(buffer, 1);
         } else
             break;
-    } 
+    }
         
     storagemgr_disconnect(db);
     return NULL;
-
-
-    // DBCONN* db = storagemgr_init_connection(1);
-    // assert(db != NULL);
-
-    // // storagemgr loop
-    // while (true) {
-    //     sbuffer_lock(buffer);
-    //     if (!sbuffer_is_empty(buffer)) {
-    //         sensor_data_t data = sbuffer_remove_last(buffer);
-    //         storagemgr_insert_sensor(db, data.id, data.value, data.ts);
-    //         // everything nice & processed
-    //     } else if (sbuffer_is_closed(buffer)) {
-    //         // buffer is both empty & closed: there will never be data again
-    //         sbuffer_unlock(buffer);
-    //         break;
-    //     }
-    //     // give the others a chance to lock the mutex
-    //     sbuffer_unlock(buffer);
-    // }
-
-    // storagemgr_disconnect(db);
-    // return NULL;
 }
 
 int main(int argc, char* argv[]) {

@@ -22,14 +22,12 @@ typedef time_t sensor_ts_t; // UTC timestamp as returned by time() - notice that
 typedef struct {
     sensor_id_t id;
     sensor_value_t value;
-    bool strgmngrRead;
-    bool datamngrRead;
     pthread_mutex_t mutex;
     sensor_ts_t ts;
 } sensor_data_t;
 
 #ifndef TIMEOUT
-    #define TIMEOUT 10
+    #define TIMEOUT 600
 #endif
 
 typedef unsigned int uint;
